@@ -23,7 +23,7 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private UUID task_id;
 
     @Column(nullable = false)
     private String name;
