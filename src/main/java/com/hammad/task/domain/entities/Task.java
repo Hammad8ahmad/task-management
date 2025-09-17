@@ -26,7 +26,7 @@ public class Task {
     private UUID task_id;
 
     @Column(nullable = false)
-    private String name;
+    private String title;
 
     @Column(nullable = false)
     private String description;

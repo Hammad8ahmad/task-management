@@ -2,6 +2,7 @@ package com.hammad.task.controllers;
 
 import com.hammad.task.domain.entities.User;
 import com.hammad.task.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,14 +21,19 @@ public class UserController {
     }
 
     @PostMapping("/auth/register")
-    public User register(@RequestBody User user){
+    public User register(@Valid @RequestBody User user){
         return userService.registerUser(user);
 
     }
 
     @PostMapping("/auth/login")
-    public Map<String, String> login(@RequestBody User user){
+    public Map<String, String> login(@Valid @RequestBody User user){
         return userService.verify(user);
+    }
+
+    @PostMapping("/auth/logout")
+    public Map<String, String> logout(){
+        return userService.logout();
     }
 
     @GetMapping("/users")

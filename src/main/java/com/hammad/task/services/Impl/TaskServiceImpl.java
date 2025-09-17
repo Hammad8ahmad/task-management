@@ -42,13 +42,13 @@ public class TaskServiceImpl implements TaskService {
         if (task.getTask_id() != null) {
             throw new IllegalArgumentException("Task already has an id!");
         }
-        if (task.getName() == null || task.getName().isBlank() ||
+        if (task.getTitle() == null || task.getTitle().isBlank() ||
                 task.getDescription() == null || task.getDescription().isBlank()) {
-            throw new IllegalArgumentException("Task must contain a name and description!");
+            throw new IllegalArgumentException("Task must contain a title and description!");
         }
 
         Task newTask = new Task();
-        newTask.setName(task.getName());
+        newTask.setTitle(task.getTitle());
         newTask.setDescription(task.getDescription());
         newTask.setStatus(task.getStatus());
         newTask.setUser(getCurrentUser());
@@ -79,7 +79,7 @@ public class TaskServiceImpl implements TaskService {
             throw new IllegalArgumentException("You are not authorized to update this task");
         }
 
-        existingTask.setName(task.getName()); // or setName
+        existingTask.setTitle(task.getTitle());
         existingTask.setDescription(task.getDescription());
         existingTask.setStatus(task.getStatus());
 

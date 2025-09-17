@@ -12,7 +12,7 @@ public class TaskMapperImpl implements TaskMapper {
     public TaskDto toDto(Task task) {
         return new TaskDto(
                 task.getTask_id(),
-                task.getName(),
+                task.getTitle(),
                 task.getDescription(),
                 task.getStatus()
         );
@@ -22,7 +22,7 @@ public class TaskMapperImpl implements TaskMapper {
     public Task fromDto(TaskDto taskDto) {
         Task task = new Task();
         task.setTask_id(taskDto.id());
-        task.setName(taskDto.name());
+        task.setTitle(taskDto.title());
         task.setDescription(taskDto.description());
         task.setStatus(taskDto.status());
         return task;

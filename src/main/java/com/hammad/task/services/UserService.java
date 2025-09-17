@@ -58,4 +58,10 @@ public class UserService {
         }
     }
 
+    public Map<String, String> logout() {
+        // For JWT-based authentication, logout is typically handled client-side
+        // by simply discarding the token. We can return a success message.
+        return Map.of("message", "Logged out successfully");
+    }
+
 }

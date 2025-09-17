@@ -4,6 +4,7 @@ import com.hammad.task.domain.dtos.TaskDto;
 import com.hammad.task.domain.entities.Task;
 import com.hammad.task.mappers.TaskMapper;
 import com.hammad.task.services.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public TaskDto createTask(@RequestBody TaskDto taskDto){
+    public TaskDto createTask(@Valid @RequestBody TaskDto taskDto){
         Task createdTask = taskService.createTask(taskMapper.fromDto(taskDto));
         return taskMapper.toDto(createdTask);
     }
@@ -43,7 +44,7 @@ public class TaskController {
     @PutMapping("/{task_id}")
     public TaskDto updateTask(
             @PathVariable("task_id") UUID task_id,
-            @RequestBody TaskDto taskDto
+            @Valid @RequestBody TaskDto taskDto
     ){
         Task updatedTask = taskService.updateTask(task_id, taskMapper.fromDto(taskDto));
         return taskMapper.toDto(updatedTask);
