@@ -33,7 +33,7 @@ A REST API built with Spring Boot for managing user authentication and tasks.
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/Hammad8ahmad/task-management.git
 cd Task-Management
 ```
 
@@ -152,6 +152,28 @@ Content-Type: application/json
 DELETE /tasks/{task-id}
 Authorization: Bearer <your-jwt-token>
 ```
+
+## Postman API Testing
+
+The following screenshots demonstrate the API endpoints being tested with Postman:
+
+### User Registration
+![User Registration](register.png)
+
+### User Login
+![User Login](login.png)
+
+### Create Task
+![Create Task](create-task.png)
+
+### Get Tasks
+![Get Tasks](get-tasks.png)
+
+### Update Task
+![Update Task](update-task.png)
+
+### Delete Task
+![Delete Task](Delete-task.png)
 
 ## Task Status Values
 
