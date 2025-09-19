@@ -24,6 +24,12 @@ public class JwtService {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
+    private final TokenBlacklistService tokenBlacklistService;
+
+    public JwtService(TokenBlacklistService tokenBlacklistService) {
+        this.tokenBlacklistService = tokenBlacklistService;
+    }
+
     public String generateToken(String email) {
         Map<String, Object> claims = new HashMap<>();
 
@@ -64,7 +70,7 @@ public class JwtService {
 
     public boolean validateToken(String token, UserDetails userDetails) {
         final String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token) && !tokenBlacklistService.isTokenBlacklisted(token));
     }
 
     private boolean isTokenExpired(String token) {
@@ -75,5 +81,8 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
+    public Date getTokenExpiration(String token) {
+        return extractExpiration(token);
+    }
 
 }

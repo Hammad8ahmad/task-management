@@ -2,6 +2,7 @@ package com.hammad.task.controllers;
 
 import com.hammad.task.domain.entities.User;
 import com.hammad.task.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,8 +33,8 @@ public class UserController {
     }
 
     @PostMapping("/auth/logout")
-    public Map<String, String> logout(){
-        return userService.logout();
+    public Map<String, String> logout(HttpServletRequest request){
+        return userService.logout(request);
     }
 
     @GetMapping("/users")
