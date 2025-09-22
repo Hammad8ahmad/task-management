@@ -38,6 +38,9 @@ public class TaskController {
 
     @DeleteMapping("/{task_id}")
     public void deleteTask(@PathVariable("task_id") UUID task_id){
+        if (task_id == null) {
+            throw new IllegalArgumentException("Task ID cannot be null");
+        }
         taskService.deleteTask(task_id);
     }
 
@@ -46,6 +49,9 @@ public class TaskController {
             @PathVariable("task_id") UUID task_id,
             @Valid @RequestBody TaskDto taskDto
     ){
+        if (task_id == null) {
+            throw new IllegalArgumentException("Task ID cannot be null");
+        }
         Task updatedTask = taskService.updateTask(task_id, taskMapper.fromDto(taskDto));
         return taskMapper.toDto(updatedTask);
     }

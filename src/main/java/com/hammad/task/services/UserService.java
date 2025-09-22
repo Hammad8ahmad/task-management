@@ -35,7 +35,21 @@ public class UserService {
 
     // Register a user by email and password
     public User registerUser(User user){
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be empty");
+        }
+        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be empty");
+        }
+        if (user.getName() == null || user.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be empty");
+        }
 
+        user.setEmail(user.getEmail().trim().toLowerCase());
+        user.setName(user.getName().trim());
         user.setPassword(encoder.encode(user.getPassword()));
         return repo.save(user);
     }
@@ -47,13 +61,23 @@ public class UserService {
 
 
     public Map<String, String> verify(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be empty");
+        }
+        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be empty");
+        }
+
         try {
             Authentication authentication = authManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
+                    new UsernamePasswordAuthenticationToken(user.getEmail().trim(), user.getPassword())
             );
 
             // If authentication succeeds, generate JWT
-            String token = jwt.generateToken(user.getEmail());
+            String token = jwt.generateToken(user.getEmail().trim());
             return Map.of("accessToken", token);
 
         } catch (BadCredentialsException ex) {

@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -25,7 +26,7 @@ public class TaskServiceImpl implements TaskService {
     private User getCurrentUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new IllegalStateException("Authenticated user not found in database"));
     }
 
 
@@ -40,16 +41,21 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task createTask(Task task) {
         if (task.getTask_id() != null) {
-            throw new IllegalArgumentException("Task already has an id!");
+            throw new IllegalArgumentException("Task ID must be null for new tasks");
         }
-        if (task.getTitle() == null || task.getTitle().isBlank() ||
-                task.getDescription() == null || task.getDescription().isBlank()) {
-            throw new IllegalArgumentException("Task must contain a title and description!");
+        if (task.getTitle() == null || task.getTitle().trim().isEmpty()) {
+            throw new IllegalArgumentException("Task title cannot be empty");
+        }
+        if (task.getDescription() == null || task.getDescription().trim().isEmpty()) {
+            throw new IllegalArgumentException("Task description cannot be empty");
+        }
+        if (task.getStatus() == null) {
+            throw new IllegalArgumentException("Task status cannot be null");
         }
 
         Task newTask = new Task();
-        newTask.setTitle(task.getTitle());
-        newTask.setDescription(task.getDescription());
+        newTask.setTitle(task.getTitle().trim());
+        newTask.setDescription(task.getDescription().trim());
         newTask.setStatus(task.getStatus());
         newTask.setUser(getCurrentUser());
 
@@ -60,10 +66,10 @@ public class TaskServiceImpl implements TaskService {
     public void deleteTask(UUID task_id) {
         User currentUser = getCurrentUser();
         Task task = taskRepository.findById(task_id)
-                .orElseThrow(() -> new IllegalArgumentException("Task not found"));
+                .orElseThrow(() -> new NoSuchElementException("Task not found with id: " + task_id));
 
         if (!task.getUser().getId().equals(currentUser.getId())) {
-            throw new IllegalArgumentException("You are not authorized to delete this task");
+            throw new org.springframework.security.access.AccessDeniedException("You are not authorized to delete this task");
         }
 
         taskRepository.deleteById(task_id);
@@ -73,14 +79,24 @@ public class TaskServiceImpl implements TaskService {
     public Task updateTask(UUID task_id, Task task) {
         User currentUser = getCurrentUser();
         Task existingTask = taskRepository.findById(task_id)
-                .orElseThrow(() -> new IllegalArgumentException("Task not found"));
+                .orElseThrow(() -> new NoSuchElementException("Task not found with id: " + task_id));
 
         if (!existingTask.getUser().getId().equals(currentUser.getId())) {
-            throw new IllegalArgumentException("You are not authorized to update this task");
+            throw new org.springframework.security.access.AccessDeniedException("You are not authorized to update this task");
         }
 
-        existingTask.setTitle(task.getTitle());
-        existingTask.setDescription(task.getDescription());
+        if (task.getTitle() == null || task.getTitle().trim().isEmpty()) {
+            throw new IllegalArgumentException("Task title cannot be empty");
+        }
+        if (task.getDescription() == null || task.getDescription().trim().isEmpty()) {
+            throw new IllegalArgumentException("Task description cannot be empty");
+        }
+        if (task.getStatus() == null) {
+            throw new IllegalArgumentException("Task status cannot be null");
+        }
+
+        existingTask.setTitle(task.getTitle().trim());
+        existingTask.setDescription(task.getDescription().trim());
         existingTask.setStatus(task.getStatus());
 
         return taskRepository.save(existingTask);
